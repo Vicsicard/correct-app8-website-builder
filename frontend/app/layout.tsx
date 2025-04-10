@@ -1,12 +1,13 @@
-import '../src/styles/globals.css';
+import '@/styles/globals.css';
 import { Inter } from 'next/font/google';
 import { Metadata } from 'next';
 import { siteMetadata } from './metadata';
+import Header from '@/components/Header';
+import Footer from '@/components/Footer';
 
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  metadataBase: new URL(siteMetadata.siteUrl),
   title: {
     default: siteMetadata.title,
     template: `%s | ${siteMetadata.title}`,
@@ -15,25 +16,10 @@ export const metadata: Metadata = {
   openGraph: {
     title: siteMetadata.title,
     description: siteMetadata.description,
-    url: siteMetadata.siteUrl,
-    siteName: siteMetadata.siteName,
-    images: [
-      {
-        url: siteMetadata.defaultImage,
-        width: 1200,
-        height: 630,
-        alt: siteMetadata.title,
-      },
-    ],
+    url: siteMetadata.url,
+    siteName: siteMetadata.title,
     locale: 'en_US',
     type: 'website',
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: siteMetadata.title,
-    description: siteMetadata.description,
-    images: [siteMetadata.defaultImage],
-    creator: siteMetadata.twitterHandle,
   },
   robots: {
     index: true,
@@ -46,29 +32,10 @@ export const metadata: Metadata = {
       'max-snippet': -1,
     },
   },
-  icons: {
-    icon: [
-      { url: '/favicon.ico' },
-      { url: '/favicon-16x16.png', sizes: '16x16', type: 'image/png' },
-      { url: '/favicon-32x32.png', sizes: '32x32', type: 'image/png' },
-    ],
-    apple: [
-      { url: '/apple-touch-icon.png', sizes: '180x180', type: 'image/png' },
-    ],
-    other: [
-      {
-        rel: 'mask-icon',
-        url: '/safari-pinned-tab.svg',
-        color: siteMetadata.themeColor,
-      },
-    ],
+  twitter: {
+    title: siteMetadata.title,
+    card: 'summary_large_image',
   },
-  manifest: '/site.webmanifest',
-  other: {
-    'msapplication-TileColor': siteMetadata.themeColor,
-    'theme-color': siteMetadata.themeColor,
-  },
-  generator: 'https://selfcaststudios.com',
 };
 
 export default function RootLayout({
@@ -78,10 +45,17 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <head>
-        <meta name="generator" content="https://selfcaststudios.com" />
-      </head>
-      <body className={inter.className}>{children}</body>
+      <body className={inter.className}>
+        <div className="flex flex-col min-h-screen">
+          <Header />
+          <main className="flex-grow bg-gray-50">
+            <div className="container mx-auto px-4 py-8">
+              {children}
+            </div>
+          </main>
+          <Footer />
+        </div>
+      </body>
     </html>
   );
 }

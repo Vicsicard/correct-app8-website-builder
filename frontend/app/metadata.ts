@@ -1,9 +1,8 @@
 export const siteMetadata = {
-  title: 'Personal Brand Website',
-  description: 'Professional portfolio and blog showcasing expertise, projects, and insights.',
-  siteUrl: 'https://yourdomain.com',
-  siteName: 'Your Name',
-  twitterHandle: '@yourhandle',
-  defaultImage: '/images/default-og.png',
-  themeColor: '#ffffff'
+  title: 'Your Brand',
+  description: 'Personal brand website showcasing blogs, videos, and more.',
+  url: 'https://yourbrand.com',
+  twitterHandle: '@yourbrand',
+  defaultImage: '/images/og-image.jpg',
+  themeColor: '#0066cc'
 };

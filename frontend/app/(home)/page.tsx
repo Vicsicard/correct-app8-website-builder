@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import { getProfile } from '../../src/lib/getProfile';
+import { getProfile } from '@/lib/getProfile';
 
 export default async function HomePage() {
   const profile = await getProfile();

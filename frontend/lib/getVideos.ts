@@ -2,42 +2,50 @@ import { createClient } from '@/utils/supabaseClient';
 
 export interface Video {
   id: string;
+  section: string;
   title: string;
-  description: string;
-  url: string;
-  thumbnail_url?: string;
-  published_at: string;
-  views: number;
+  body: string;
+  excerpt: string;
+  embed_url: string;
+  tags?: string[];
+  published: boolean;
+  date: string;
 }
 
 export async function getAllVideos(): Promise<Video[]> {
   try {
     const supabase = createClient();
     const { data, error } = await supabase
-      .from('videos')
+      .from('content')
       .select('*')
-      .order('published_at', { ascending: false });
+      .eq('section', 'video')
+      .eq('published', true)
+      .order('date', { ascending: false });
 
     if (error) {
       console.error('Error fetching videos:', error);
       return [
         {
           id: '1',
+          section: 'video',
           title: 'Getting Started with Next.js',
-          description: 'Learn how to build modern web applications with Next.js',
-          url: 'https://www.youtube.com/watch?v=example1',
-          thumbnail_url: 'https://placehold.co/320x180/darkgray/white?text=Next.js+Tutorial',
-          published_at: new Date().toISOString(),
-          views: 1234
+          body: 'Learn how to build modern web applications with Next.js',
+          excerpt: 'A comprehensive guide to Next.js development',
+          embed_url: 'https://www.youtube.com/embed/1234567890',
+          tags: ['nextjs', 'react', 'tutorial'],
+          published: true,
+          date: new Date().toISOString()
         },
         {
           id: '2',
-          title: 'Building with Tailwind CSS',
-          description: 'Master utility-first CSS with Tailwind',
-          url: 'https://www.youtube.com/watch?v=example2',
-          thumbnail_url: 'https://placehold.co/320x180/darkgray/white?text=Tailwind+CSS',
-          published_at: new Date().toISOString(),
-          views: 987
+          section: 'video',
+          title: 'Tailwind CSS Masterclass',
+          body: 'Master Tailwind CSS and build beautiful websites',
+          excerpt: 'Learn utility-first CSS with Tailwind',
+          embed_url: 'https://www.youtube.com/embed/0987654321',
+          tags: ['css', 'tailwind', 'tutorial'],
+          published: true,
+          date: new Date().toISOString()
         }
       ];
     }
@@ -48,21 +56,25 @@ export async function getAllVideos(): Promise<Video[]> {
     return [
       {
         id: '1',
+        section: 'video',
         title: 'Getting Started with Next.js',
-        description: 'Learn how to build modern web applications with Next.js',
-        url: 'https://www.youtube.com/watch?v=example1',
-        thumbnail_url: 'https://placehold.co/320x180/darkgray/white?text=Next.js+Tutorial',
-        published_at: new Date().toISOString(),
-        views: 1234
+        body: 'Learn how to build modern web applications with Next.js',
+        excerpt: 'A comprehensive guide to Next.js development',
+        embed_url: 'https://www.youtube.com/embed/1234567890',
+        tags: ['nextjs', 'react', 'tutorial'],
+        published: true,
+        date: new Date().toISOString()
       },
       {
         id: '2',
-        title: 'Building with Tailwind CSS',
-        description: 'Master utility-first CSS with Tailwind',
-        url: 'https://www.youtube.com/watch?v=example2',
-        thumbnail_url: 'https://placehold.co/320x180/darkgray/white?text=Tailwind+CSS',
-        published_at: new Date().toISOString(),
-        views: 987
+        section: 'video',
+        title: 'Tailwind CSS Masterclass',
+        body: 'Master Tailwind CSS and build beautiful websites',
+        excerpt: 'Learn utility-first CSS with Tailwind',
+        embed_url: 'https://www.youtube.com/embed/0987654321',
+        tags: ['css', 'tailwind', 'tutorial'],
+        published: true,
+        date: new Date().toISOString()
       }
     ];
   }
@@ -72,21 +84,24 @@ export async function getVideoById(id: string): Promise<Video | null> {
   try {
     const supabase = createClient();
     const { data, error } = await supabase
-      .from('videos')
+      .from('content')
       .select('*')
+      .eq('section', 'video')
       .eq('id', id)
       .single();
 
     if (error) {
       console.error('Error fetching video:', error);
       return {
-        id: id,
+        id: '1',
+        section: 'video',
         title: 'Sample Video',
-        description: 'This is a placeholder video while we connect to the database.',
-        url: 'https://www.youtube.com/watch?v=example1',
-        thumbnail_url: 'https://placehold.co/320x180/darkgray/white?text=Sample+Video',
-        published_at: new Date().toISOString(),
-        views: 1234
+        body: 'This is a sample video description',
+        excerpt: 'A sample video with placeholder content',
+        embed_url: 'https://www.youtube.com/embed/sample',
+        tags: ['sample'],
+        published: true,
+        date: new Date().toISOString()
       };
     }
 
@@ -94,21 +109,24 @@ export async function getVideoById(id: string): Promise<Video | null> {
   } catch (error) {
     console.error('Error:', error);
     return {
-      id: id,
+      id: '1',
+      section: 'video',
       title: 'Sample Video',
-      description: 'This is a placeholder video while we connect to the database.',
-      url: 'https://www.youtube.com/watch?v=example1',
-      thumbnail_url: 'https://placehold.co/320x180/darkgray/white?text=Sample+Video',
-      published_at: new Date().toISOString(),
-      views: 1234
+      body: 'This is a sample video description',
+      excerpt: 'A sample video with placeholder content',
+      embed_url: 'https://www.youtube.com/embed/sample',
+      tags: ['sample'],
+      published: true,
+      date: new Date().toISOString()
     };
   }
 }
 
 export async function getAllVideoIds(): Promise<string[]> {
   const { data, error } = await createClient()
-    .from('videos')
-    .select('id');
+    .from('content')
+    .select('id')
+    .eq('section', 'video');
 
   if (error) {
     console.error('Error fetching video IDs:', error);

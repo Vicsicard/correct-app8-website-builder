@@ -8,10 +8,9 @@ interface SocialPost {
   title: string;
   body: string;
   excerpt: string;
-  date: string;
+  published_at: string;
   embed_url?: string;
   tags?: string[];
-  published: boolean;
 }
 
 async function getSocialPosts(): Promise<SocialPost[]> {
@@ -21,8 +20,8 @@ async function getSocialPosts(): Promise<SocialPost[]> {
       .from('content')
       .select('*')
       .eq('section', 'social')
-      .eq('published', true)
-      .order('date', { ascending: false });
+      .not('published_at', 'is', null)
+      .order('published_at', { ascending: false });
 
     if (error) {
       console.error('Error fetching social posts:', error);
@@ -34,9 +33,8 @@ async function getSocialPosts(): Promise<SocialPost[]> {
           title: 'Web Development Thoughts',
           body: 'Excited to share my latest thoughts on web development and the future of technology! #webdev #tech',
           excerpt: 'Thoughts on web development',
-          date: new Date().toISOString(),
-          tags: ['webdev', 'tech'],
-          published: true
+          published_at: new Date().toISOString(),
+          tags: ['webdev', 'tech']
         },
         {
           id: '2',
@@ -45,9 +43,8 @@ async function getSocialPosts(): Promise<SocialPost[]> {
           title: 'Tech Meetup',
           body: 'Behind the scenes at our latest tech meetup! 📱 #techmeetup #coding #developer',
           excerpt: 'Tech meetup highlights',
-          date: new Date().toISOString(),
-          tags: ['techmeetup', 'coding', 'developer'],
-          published: true
+          published_at: new Date().toISOString(),
+          tags: ['techmeetup', 'coding', 'developer']
         }
       ];
     }
@@ -77,7 +74,7 @@ export default async function SocialPage() {
                 className="mr-2"
               />
               <span className="text-gray-600 text-sm">
-                {new Date(post.date).toLocaleDateString()}
+                {new Date(post.published_at).toLocaleDateString()}
               </span>
             </div>
             <p className="text-gray-800 mb-4">{post.body}</p>

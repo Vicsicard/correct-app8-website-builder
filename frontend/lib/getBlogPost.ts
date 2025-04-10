@@ -9,7 +9,7 @@ export interface BlogPost {
   body: string;
   excerpt: string;
   tags?: string[];
-  published: boolean;
+  published_at: string;
   date: string;
   embed_url?: string;
 }
@@ -23,7 +23,7 @@ const placeholderPosts: BlogPost[] = [
     body: '# Getting Started\n\nWelcome to web development! This is a placeholder post while we connect to the database.',
     excerpt: 'Learn the basics of web development and start your journey.',
     tags: ['web development', 'getting started'],
-    published: true,
+    published_at: new Date().toISOString(),
     date: new Date().toISOString()
   }
 ];
@@ -35,8 +35,8 @@ export async function getAllBlogPosts(): Promise<BlogPost[]> {
       .from('content')
       .select('*')
       .eq('section', 'blog')
-      .eq('published', true)
-      .order('date', { ascending: false });
+      .not('published_at', 'is', null)
+      .order('published_at', { ascending: false });
 
     if (error) {
       console.error('Error fetching blog posts:', error);
@@ -62,6 +62,7 @@ export async function getBlogPostBySlug(slug: string): Promise<BlogPost | null> 
       .select('*')
       .eq('section', 'blog')
       .eq('slug', slug)
+      .not('published_at', 'is', null)
       .single();
 
     if (error) {

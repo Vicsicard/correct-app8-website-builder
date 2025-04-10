@@ -8,7 +8,7 @@ export interface Video {
   excerpt: string;
   embed_url: string;
   tags?: string[];
-  published: boolean;
+  published_at: string;
   date: string;
 }
 
@@ -19,8 +19,8 @@ export async function getAllVideos(): Promise<Video[]> {
       .from('content')
       .select('*')
       .eq('section', 'video')
-      .eq('published', true)
-      .order('date', { ascending: false });
+      .not('published_at', 'is', null)
+      .order('published_at', { ascending: false });
 
     if (error) {
       console.error('Error fetching videos:', error);
@@ -33,7 +33,7 @@ export async function getAllVideos(): Promise<Video[]> {
           excerpt: 'A comprehensive guide to Next.js development',
           embed_url: 'https://www.youtube.com/embed/1234567890',
           tags: ['nextjs', 'react', 'tutorial'],
-          published: true,
+          published_at: new Date().toISOString(),
           date: new Date().toISOString()
         },
         {
@@ -44,7 +44,7 @@ export async function getAllVideos(): Promise<Video[]> {
           excerpt: 'Learn utility-first CSS with Tailwind',
           embed_url: 'https://www.youtube.com/embed/0987654321',
           tags: ['css', 'tailwind', 'tutorial'],
-          published: true,
+          published_at: new Date().toISOString(),
           date: new Date().toISOString()
         }
       ];
@@ -62,7 +62,7 @@ export async function getAllVideos(): Promise<Video[]> {
         excerpt: 'A comprehensive guide to Next.js development',
         embed_url: 'https://www.youtube.com/embed/1234567890',
         tags: ['nextjs', 'react', 'tutorial'],
-        published: true,
+        published_at: new Date().toISOString(),
         date: new Date().toISOString()
       },
       {
@@ -73,7 +73,7 @@ export async function getAllVideos(): Promise<Video[]> {
         excerpt: 'Learn utility-first CSS with Tailwind',
         embed_url: 'https://www.youtube.com/embed/0987654321',
         tags: ['css', 'tailwind', 'tutorial'],
-        published: true,
+        published_at: new Date().toISOString(),
         date: new Date().toISOString()
       }
     ];
@@ -88,6 +88,7 @@ export async function getVideoById(id: string): Promise<Video | null> {
       .select('*')
       .eq('section', 'video')
       .eq('id', id)
+      .not('published_at', 'is', null)
       .single();
 
     if (error) {
@@ -100,7 +101,7 @@ export async function getVideoById(id: string): Promise<Video | null> {
         excerpt: 'A sample video with placeholder content',
         embed_url: 'https://www.youtube.com/embed/sample',
         tags: ['sample'],
-        published: true,
+        published_at: new Date().toISOString(),
         date: new Date().toISOString()
       };
     }
@@ -116,7 +117,7 @@ export async function getVideoById(id: string): Promise<Video | null> {
       excerpt: 'A sample video with placeholder content',
       embed_url: 'https://www.youtube.com/embed/sample',
       tags: ['sample'],
-      published: true,
+      published_at: new Date().toISOString(),
       date: new Date().toISOString()
     };
   }
@@ -126,7 +127,8 @@ export async function getAllVideoIds(): Promise<string[]> {
   const { data, error } = await createClient()
     .from('content')
     .select('id')
-    .eq('section', 'video');
+    .eq('section', 'video')
+    .not('published_at', 'is', null);
 
   if (error) {
     console.error('Error fetching video IDs:', error);

@@ -24,11 +24,9 @@ export default async function BlogPostPage({
     <article className="max-w-4xl mx-auto prose lg:prose-xl">
       <h1>{post.title}</h1>
       <div className="flex items-center text-gray-600 mb-8">
-        <span>{post.author}</span>
-        <span className="mx-2">•</span>
-        <time>{new Date(post.published_at).toLocaleDateString()}</time>
+        <time>{new Date(post.date).toLocaleDateString()}</time>
       </div>
-      <div dangerouslySetInnerHTML={{ __html: post.content }} />
+      <div dangerouslySetInnerHTML={{ __html: post.body }} />
     </article>
   );
 }

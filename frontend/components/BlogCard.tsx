@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { BlogPost } from '@/lib/getBlogPost';
 
 export default function BlogCard({ post }: { post: BlogPost }) {
-  const thumbnailUrl = post.thumbnail_url || 'https://placehold.co/800x400/darkgray/white?text=Blog+Post';
+  const thumbnailUrl = post.embed_url || 'https://placehold.co/800x400/darkgray/white?text=Blog+Post';
 
   return (
     <Link href={`/blog/${post.slug}`} className="group">
@@ -21,9 +21,7 @@ export default function BlogCard({ post }: { post: BlogPost }) {
           <h3 className="text-lg font-semibold line-clamp-2 mb-2">{post.title}</h3>
           <p className="text-gray-600 text-sm line-clamp-2">{post.excerpt}</p>
           <div className="mt-2 flex items-center text-sm text-gray-500">
-            <span>{post.author}</span>
-            <span className="mx-2">•</span>
-            <span>{new Date(post.published_at).toLocaleDateString()}</span>
+            <span>{new Date(post.date).toLocaleDateString()}</span>
           </div>
           {post.tags && post.tags.length > 0 && (
             <div className="mt-2 flex flex-wrap gap-1">

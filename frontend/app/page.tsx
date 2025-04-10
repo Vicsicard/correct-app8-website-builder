@@ -1,23 +1,62 @@
 import Image from 'next/image';
 import { getProfile } from '@/lib/getProfile';
-import { getAllBlogPosts } from '@/lib/getBlogPost';
-import { getAllVideos } from '@/lib/getVideos';
+import { getAllBlogPosts, BlogPost } from '@/lib/getBlogPost';
+import { getAllVideos, Video } from '@/lib/getVideos';
 import BlogCard from '@/components/BlogCard';
 import VideoCard from '@/components/VideoCard';
 
-export default async function HomePage() {
-  const [profile, blogs, videos] = await Promise.all([
-    getProfile(),
-    getAllBlogPosts(),
-    getAllVideos(),
-  ]);
+export const dynamic = 'force-dynamic';
 
-  if (!profile) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <p className="text-gray-500">Loading profile...</p>
-      </div>
-    );
+interface SocialLinks {
+  twitter?: string;
+  linkedin?: string;
+  github?: string;
+}
+
+interface Profile {
+  full_name: string;
+  title: string;
+  bio: string;
+  avatar_url: string;
+  tagline?: string;
+  quote?: string;
+  email?: string;
+  social_links: SocialLinks;
+}
+
+const defaultProfile: Profile = {
+  full_name: 'Your Name',
+  title: 'Web Developer & Content Creator',
+  bio: 'Building amazing web experiences and sharing knowledge through content.',
+  avatar_url: '/placeholder-avatar.jpg',
+  social_links: {
+    twitter: 'https://twitter.com',
+    linkedin: 'https://linkedin.com',
+    github: 'https://github.com'
+  }
+};
+
+export default async function HomePage() {
+  let profile: Profile = defaultProfile;
+  let blogs: BlogPost[] = [];
+  let videos: Video[] = [];
+
+  try {
+    [blogs, videos] = await Promise.all([
+      getAllBlogPosts().catch(() => [] as BlogPost[]),
+      getAllVideos().catch(() => [] as Video[]),
+    ]);
+
+    const fetchedProfile = await getProfile().catch(() => null);
+    if (fetchedProfile) {
+      profile = {
+        ...fetchedProfile,
+        avatar_url: fetchedProfile.avatar_url || defaultProfile.avatar_url,
+        social_links: fetchedProfile.social_links || defaultProfile.social_links
+      };
+    }
+  } catch (error) {
+    console.error('Error fetching content:', error);
   }
 
   return (
@@ -52,7 +91,7 @@ export default async function HomePage() {
           </p>
 
           {profile.tagline && (
-            <p className="text-lg md:text-xl text-gray-500 max-w-2xl mx-auto">
+            <p className="text-lg text-gray-500 max-w-2xl mx-auto">
               {profile.tagline}
             </p>
           )}
@@ -94,11 +133,17 @@ export default async function HomePage() {
       <section className="py-16 bg-gray-50">
         <div className="container mx-auto px-4">
           <h2 className="text-3xl font-bold mb-8">Recent Blog Posts</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {blogs.map((blog) => (
-              <BlogCard key={blog.slug} post={blog} />
-            ))}
-          </div>
+          {blogs.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {blogs.map((blog) => (
+                <BlogCard key={blog.slug} post={blog} />
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-12 bg-gray-50 rounded-lg">
+              <p className="text-gray-600">No blog posts available yet. Check back soon!</p>
+            </div>
+          )}
         </div>
       </section>
 
@@ -106,11 +151,17 @@ export default async function HomePage() {
       <section className="py-12 bg-white">
         <div className="container mx-auto px-4">
           <h2 className="text-3xl font-bold mb-8">Video Content</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {videos.map((video) => (
-              <VideoCard key={video.id} video={video} />
-            ))}
-          </div>
+          {videos.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {videos.map((video) => (
+                <VideoCard key={video.id} video={video} />
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-12 bg-gray-50 rounded-lg">
+              <p className="text-gray-600">No videos available yet. Check back soon!</p>
+            </div>
+          )}
         </div>
       </section>
 

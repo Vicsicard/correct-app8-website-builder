@@ -4,7 +4,7 @@ const nextConfig = {
     domains: ['placehold.co'],
     unoptimized: true
   },
-  output: 'standalone',
+  // output: 'standalone',  // Commenting out for Vercel deployment
   reactStrictMode: true,
   swcMinify: true
 }
